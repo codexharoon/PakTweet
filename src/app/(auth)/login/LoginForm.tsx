@@ -1,6 +1,6 @@
 "use client";
 
-import { signUpSchema, signUpSchemaType } from "@/schema/zodValidation";
+import { signInSchema, signInSchemaType } from "@/schema/zodValidation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -15,25 +15,24 @@ import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import LoadingButton from "@/components/ui/loading-button";
 import { useTransition } from "react";
-import { signup } from "./actions";
 import { useToast } from "@/components/ui/use-toast";
+import { login } from "./actions";
 
-const SignupForm = () => {
+const LoginForm = () => {
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
 
-  const form = useForm<signUpSchemaType>({
-    resolver: zodResolver(signUpSchema),
+  const form = useForm<signInSchemaType>({
+    resolver: zodResolver(signInSchema),
     defaultValues: {
       username: "",
-      email: "",
       password: "",
     },
   });
 
-  function onSubmit(values: signUpSchemaType) {
+  function onSubmit(values: signInSchemaType) {
     startTransition(async () => {
-      const { error } = await signup(values);
+      const { error } = await login(values);
 
       if (error) {
         toast({
@@ -47,7 +46,7 @@ const SignupForm = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
           name="username"
@@ -61,19 +60,7 @@ const SignupForm = () => {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input type="email" placeholder="email" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
         <FormField
           control={form.control}
           name="password"
@@ -92,11 +79,11 @@ const SignupForm = () => {
           )}
         />
         <LoadingButton loading={isPending} type="submit" className="w-full">
-          Sign up
+          Login
         </LoadingButton>
       </form>
     </Form>
   );
 };
 
-export default SignupForm;
+export default LoginForm;
