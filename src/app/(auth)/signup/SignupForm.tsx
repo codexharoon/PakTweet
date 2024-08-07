@@ -37,9 +37,9 @@ const SignupForm = () => {
 
       if (error) {
         toast({
-          title: "${error}",
+          title: `${error}`,
           variant: "destructive",
-          duration: 4000,
+          duration: 3000,
         });
       }
     });
