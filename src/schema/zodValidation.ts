@@ -29,3 +29,14 @@ export const signInSchema = z.object({
 });
 
 export type signInSchemaType = z.infer<typeof signInSchema>;
+
+// post schema
+
+export const submitPostSchema = z.object({
+  content: z
+    .string()
+    .trim()
+    .min(1, { message: "Post content cannot be empty" }),
+});
+
+export type submitPostSchemaType = z.infer<typeof submitPostSchema>;
