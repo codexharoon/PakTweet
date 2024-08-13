@@ -1,5 +1,6 @@
 import PostEditor from "@/components/posts/editor/PostEditor";
 import Post from "@/components/posts/Post";
+import TrendsSidebar from "@/components/RightSidebar/TrendsSidebar";
 import prisma from "@/lib/prisma";
 import { postDataInclude } from "@/lib/types";
 
@@ -11,7 +12,7 @@ const Page = async () => {
     },
   });
   return (
-    <main className="w-full min-w-0">
+    <main className="flex w-full min-w-0 gap-5">
       <div className="w-full min-w-0 space-y-5">
         <PostEditor />
 
@@ -19,6 +20,7 @@ const Page = async () => {
           <Post key={post.id} post={post} />
         ))}
       </div>
+      <TrendsSidebar />
     </main>
   );
 };
