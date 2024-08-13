@@ -26,7 +26,7 @@ const PostEditor = () => {
 
   const inputContent =
     editor?.getText({
-      blockSeparator: "/n",
+      blockSeparator: "\n",
     }) || "";
 
   async function submit() {
