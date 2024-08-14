@@ -27,7 +27,7 @@ const Post = ({ post }: PostProps) => {
             href={`/posts/${post.id}`}
             className="block text-sm text-muted-foreground hover:underline"
           >
-            {formatRelativeData(post.createdAt)}
+            {formatRelativeData(new Date(post.createdAt))}
           </Link>
         </div>
       </div>
