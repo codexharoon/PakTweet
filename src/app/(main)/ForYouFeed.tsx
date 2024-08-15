@@ -1,12 +1,14 @@
 "use client";
 
-import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { forYouRouteDataProp } from "@/lib/types";
 import { Loader2 } from "lucide-react";
 import Post from "@/components/posts/Post";
 import { kyInstance } from "@/lib/ky";
-import { Button } from "@/components/ui/button";
 import InfiniteScrollContainer from "@/components/InfiniteScrollContainer";
+import PostsLoadingSkeleton, {
+  PostLoadingSkeleton,
+} from "@/components/posts/PostsLoadingSkeleton";
 
 const ForYouFeed = () => {
   const {
@@ -29,7 +31,7 @@ const ForYouFeed = () => {
   });
 
   if (status === "pending") {
-    return <Loader2 className="mx-auto animate-spin" />;
+    return <PostsLoadingSkeleton />;
   }
 
   if (status === "error") {
@@ -42,6 +44,14 @@ const ForYouFeed = () => {
 
   const posts = data.pages.flatMap((page) => page.posts);
 
+  if (status === "success" && !hasNextPage && posts.length === 0) {
+    return (
+      <p className="text-center text-muted-foreground">
+        No one has posted yet. Be the first one to post!
+      </p>
+    );
+  }
+
   return (
     <InfiniteScrollContainer
       className="space-y-5"
@@ -51,7 +61,8 @@ const ForYouFeed = () => {
         <Post key={post.id} post={post} />
       ))}
 
-      {isFetchingNextPage && <Loader2 className="mx-auto my-3 animate-spin" />}
+      {/* {isFetchingNextPage && <Loader2 className="mx-auto my-3 animate-spin" />} */}
+      {isFetchingNextPage && <PostLoadingSkeleton />}
     </InfiniteScrollContainer>
   );
 };
