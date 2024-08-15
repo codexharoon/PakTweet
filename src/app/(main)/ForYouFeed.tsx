@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { PostProp } from "@/lib/types";
 import { Loader2 } from "lucide-react";
 import Post from "@/components/posts/Post";
+import { kyInstance } from "@/lib/ky";
 
 type QueryProps = {
   posts: PostProp[];
@@ -12,15 +13,7 @@ type QueryProps = {
 const ForYouFeed = () => {
   const query = useQuery<QueryProps>({
     queryKey: ["post-feed", "for-you"],
-    queryFn: async () => {
-      const response = await fetch("/api/posts/for-you");
-
-      if (!response.ok) {
-        throw new Error("An error occurred while fetching the posts.");
-      }
-
-      return response.json();
-    },
+    queryFn: kyInstance.get("/api/posts/for-you").json<QueryProps>,
   });
 
   if (query.status === "pending") {
@@ -36,11 +29,11 @@ const ForYouFeed = () => {
   }
 
   return (
-    <>
+    <div className="space-y-5">
       {query.data.posts.map((post) => (
         <Post key={post.id} post={post} />
       ))}
-    </>
+    </div>
   );
 };
 
