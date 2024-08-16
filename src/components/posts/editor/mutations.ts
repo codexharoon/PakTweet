@@ -4,8 +4,8 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { submitPost } from "./editor/actions";
-import { useToast } from "../ui/use-toast";
+import { submitPost } from "./actions";
+import { useToast } from "../../ui/use-toast";
 import { forYouRouteDataProp } from "@/lib/types";
 
 export default function useSubmitPostMutation() {

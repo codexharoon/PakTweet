@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import UserAvatar from "@/components/UserAvatar";
 import { useSession } from "@/app/(main)/SessionProvider";
 import "./style.css";
-import useSubmitPostMutation from "../mutations";
+import useSubmitPostMutation from "./mutations";
 import LoadingButton from "@/components/ui/loading-button";
 
 const PostEditor = () => {
