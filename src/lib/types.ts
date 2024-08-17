@@ -20,3 +20,8 @@ export interface forYouRouteDataProp {
   posts: PostProp[];
   nextCursor: string | null;
 }
+
+export interface followerInfoProp {
+  followers: number;
+  isFollowedByUser: boolean;
+}
