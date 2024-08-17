@@ -49,3 +49,60 @@ export async function GET(
     return Response.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
+
+export async function POST(
+  req: Request,
+  { params: { userId } }: { params: { userId: string } },
+) {
+  try {
+    const { user: loggedInUser } = await validateRequest();
+
+    if (!loggedInUser) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    await prisma.follow.upsert({
+      where: {
+        followerId_followingId: {
+          followerId: loggedInUser.id,
+          followingId: userId,
+        },
+      },
+      create: {
+        followerId: loggedInUser.id,
+        followingId: userId,
+      },
+      update: {},
+    });
+
+    return Response.json({ message: "Success" });
+  } catch (error) {
+    console.error(error);
+    return Response.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}
+
+export async function DELETE(
+  req: Request,
+  { params: { userId } }: { params: { userId: string } },
+) {
+  try {
+    const { user: loggedInUser } = await validateRequest();
+
+    if (!loggedInUser) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    await prisma.follow.deleteMany({
+      where: {
+        followerId: loggedInUser.id,
+        followingId: userId,
+      },
+    });
+
+    return Response.json({ message: "Success" });
+  } catch (error) {
+    console.error(error);
+    return Response.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}
