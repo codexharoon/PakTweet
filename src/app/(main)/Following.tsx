@@ -10,7 +10,7 @@ import PostsLoadingSkeleton, {
   PostLoadingSkeleton,
 } from "@/components/posts/PostsLoadingSkeleton";
 
-const ForYouFeed = () => {
+const Following = () => {
   const {
     data,
     fetchNextPage,
@@ -19,10 +19,10 @@ const ForYouFeed = () => {
     isFetchingNextPage,
     status,
   } = useInfiniteQuery({
-    queryKey: ["post-feed", "for-you"],
+    queryKey: ["post-feed", "following"],
     queryFn: ({ pageParam }) =>
       kyInstance
-        .get("/api/posts/for-you", {
+        .get("/api/posts/following", {
           searchParams: pageParam ? { cursor: pageParam } : {},
         })
         .json<PostDataProp>(),
@@ -47,7 +47,7 @@ const ForYouFeed = () => {
   if (status === "success" && !hasNextPage && posts.length === 0) {
     return (
       <p className="text-center text-muted-foreground">
-        No one has posted yet. Be the first one to post!
+        Nothing to show here. Follow some users to see their posts!
       </p>
     );
   }
@@ -67,4 +67,4 @@ const ForYouFeed = () => {
   );
 };
 
-export default ForYouFeed;
+export default Following;

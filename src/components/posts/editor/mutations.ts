@@ -6,7 +6,7 @@ import {
 } from "@tanstack/react-query";
 import { submitPost } from "./actions";
 import { useToast } from "../../ui/use-toast";
-import { forYouRouteDataProp } from "@/lib/types";
+import { PostDataProp } from "@/lib/types";
 
 export default function useSubmitPostMutation() {
   const { toast } = useToast();
@@ -22,24 +22,25 @@ export default function useSubmitPostMutation() {
 
       await queryClient.cancelQueries(queryFilter);
 
-      queryClient.setQueriesData<
-        InfiniteData<forYouRouteDataProp, string | null>
-      >(queryFilter, (oldData) => {
-        const firstPage = oldData?.pages[0];
+      queryClient.setQueriesData<InfiniteData<PostDataProp, string | null>>(
+        queryFilter,
+        (oldData) => {
+          const firstPage = oldData?.pages[0];
 
-        if (firstPage) {
-          return {
-            pageParams: oldData?.pageParams,
-            pages: [
-              {
-                posts: [newPost, ...firstPage.posts],
-                nextCursor: firstPage.nextCursor,
-              },
-              ...oldData.pages.slice(1),
-            ],
-          };
-        }
-      });
+          if (firstPage) {
+            return {
+              pageParams: oldData?.pageParams,
+              pages: [
+                {
+                  posts: [newPost, ...firstPage.posts],
+                  nextCursor: firstPage.nextCursor,
+                },
+                ...oldData.pages.slice(1),
+              ],
+            };
+          }
+        },
+      );
 
       queryClient.invalidateQueries({
         queryKey: queryFilter.queryKey,

@@ -34,7 +34,7 @@ export type PostProp = Prisma.PostGetPayload<{
   include: ReturnType<typeof getPostDataInclude>;
 }>;
 
-export interface forYouRouteDataProp {
+export interface PostDataProp {
   posts: PostProp[];
   nextCursor: string | null;
 }

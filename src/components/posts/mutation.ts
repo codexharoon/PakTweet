@@ -6,7 +6,7 @@ import {
 } from "@tanstack/react-query";
 import { useToast } from "../ui/use-toast";
 import { deletePost } from "./actions";
-import { forYouRouteDataProp } from "@/lib/types";
+import { PostDataProp } from "@/lib/types";
 import { usePathname, useRouter } from "next/navigation";
 
 export default function useDeletePostMutation() {
@@ -25,19 +25,20 @@ export default function useDeletePostMutation() {
 
       await queryClient.cancelQueries(queryFilter);
 
-      queryClient.setQueriesData<
-        InfiniteData<forYouRouteDataProp, string | null>
-      >(queryFilter, (oldData) => {
-        if (!oldData) return;
+      queryClient.setQueriesData<InfiniteData<PostDataProp, string | null>>(
+        queryFilter,
+        (oldData) => {
+          if (!oldData) return;
 
-        return {
-          pageParams: oldData.pageParams,
-          pages: oldData.pages.map((page) => ({
-            nextCursor: page.nextCursor,
-            posts: page.posts.filter((post) => post.id !== deletePost.id),
-          })),
-        };
-      });
+          return {
+            pageParams: oldData.pageParams,
+            pages: oldData.pages.map((page) => ({
+              nextCursor: page.nextCursor,
+              posts: page.posts.filter((post) => post.id !== deletePost.id),
+            })),
+          };
+        },
+      );
 
       toast({
         description: "Post deleted successfully.",

@@ -5,12 +5,11 @@ import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {
-    // cursor is the last post id
     const cursor = req.nextUrl.searchParams.get("cursor") || undefined;
 
     const { user } = await validateRequest();
 
-    if (!user)
+    if (!user) {
       return Response.json(
         {
           error: "Unauthorized",
@@ -19,14 +18,22 @@ export async function GET(req: NextRequest) {
           status: 401,
         },
       );
+    }
 
     const pageSize = 10;
 
     const posts = await prisma.post.findMany({
-      include: getPostDataInclude(user.id),
-      orderBy: {
-        createdAt: "desc",
+      where: {
+        user: {
+          followers: {
+            some: {
+              followerId: user.id,
+            },
+          },
+        },
       },
+      orderBy: { createdAt: "desc" },
+      include: getPostDataInclude(user.id),
       take: pageSize + 1,
       cursor: cursor ? { id: cursor } : undefined,
     });
@@ -38,11 +45,9 @@ export async function GET(req: NextRequest) {
       nextCursor,
     };
 
-    return Response.json(data, {
-      status: 200,
-    });
+    return Response.json(data, { status: 200 });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return Response.json(
       {
         error: "Internal Server Error",
