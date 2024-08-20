@@ -5,6 +5,7 @@ import { formatRelativeData } from "@/lib/utils";
 import PostMoreButton from "./PostMoreButton";
 import { useSession } from "@/app/(main)/SessionProvider";
 import Linkify from "../Linkify";
+import UserTooltip from "../UserTooltip";
 
 interface PostProps {
   post: PostProp;
@@ -17,17 +18,21 @@ const Post = ({ post }: PostProps) => {
     <article className="group/post space-y-3 rounded-2xl bg-card p-5 shadow-sm">
       <div className="flex items-center justify-between">
         <div className="flex flex-wrap gap-3">
-          <Link href={`/users/${post.user.username}`}>
-            <UserAvatar avatarUrl={post.user.avatarUrl} />
-          </Link>
+          <UserTooltip user={post.user}>
+            <Link href={`/users/${post.user.username}`}>
+              <UserAvatar avatarUrl={post.user.avatarUrl} />
+            </Link>
+          </UserTooltip>
 
           <div>
-            <Link
-              href={`/users/${post.user.username}`}
-              className="block font-medium hover:underline"
-            >
-              {post.user.displayName}
-            </Link>
+            <UserTooltip user={post.user}>
+              <Link
+                href={`/users/${post.user.username}`}
+                className="block font-medium hover:underline"
+              >
+                {post.user.displayName}
+              </Link>
+            </UserTooltip>
 
             <Link
               href={`/posts/${post.id}`}
