@@ -4,6 +4,7 @@ import Link from "next/link";
 import { formatRelativeData } from "@/lib/utils";
 import PostMoreButton from "./PostMoreButton";
 import { useSession } from "@/app/(main)/SessionProvider";
+import Linkify from "../Linkify";
 
 interface PostProps {
   post: PostProp;
@@ -44,7 +45,9 @@ const Post = ({ post }: PostProps) => {
         )}
       </div>
 
-      <div className="whitespace-pre-line break-words">{post.content}</div>
+      <Linkify>
+        <div className="whitespace-pre-line break-words">{post.content}</div>
+      </Linkify>
     </article>
   );
 };
