@@ -1,0 +1,38 @@
+"use server";
+
+import { validateRequest } from "@/auth";
+import prisma from "@/lib/prisma";
+import { getUserSelectData } from "@/lib/types";
+import {
+  updateUserProfileSchema,
+  updateUserProfileSchemaType,
+} from "@/schema/zodValidation";
+
+export async function updateUserProfile(values: updateUserProfileSchemaType) {
+  const validateValues = updateUserProfileSchema.safeParse(values);
+
+  if (!validateValues.success) {
+    throw new Error(
+      validateValues.error.format()._errors[0] || "Invalid values",
+    );
+  }
+
+  const { user } = await validateRequest();
+
+  if (!user) {
+    throw new Error("Unauthorized");
+  }
+
+  const { displayName, bio } = validateValues.data;
+
+  const updatedUser = await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      displayName,
+      bio,
+    },
+    select: getUserSelectData(user.id),
+  });
+
+  return updatedUser;
+}

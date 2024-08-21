@@ -1,4 +1,5 @@
 import { validateRequest } from "@/auth";
+import prisma from "@/lib/prisma";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
 
@@ -20,6 +21,13 @@ export const fileRouter = {
         "/f/",
         `/a/${process.env.NEXT_PUBLIC_UPLOADTHING_APP_ID}/`,
       );
+
+      await prisma.user.update({
+        where: { id: metadata.user.id },
+        data: {
+          avatarUrl: newAvatarUrl,
+        },
+      });
 
       return { avatarUrl: newAvatarUrl };
     }),

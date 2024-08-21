@@ -40,3 +40,21 @@ export const submitPostSchema = z.object({
 });
 
 export type submitPostSchemaType = z.infer<typeof submitPostSchema>;
+
+// user profile schema
+
+export const updateUserProfileSchema = z.object({
+  displayName: z
+    .string()
+    .trim()
+    .min(3, { message: "Display name must be at least 3 characters long" })
+    .max(30, { message: "Display name must be at most 30 characters long" }),
+  bio: z
+    .string()
+    .trim()
+    .max(160, { message: "Bio must be at most 160 characters long" }),
+});
+
+export type updateUserProfileSchemaType = z.infer<
+  typeof updateUserProfileSchema
+>;
