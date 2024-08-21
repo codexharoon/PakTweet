@@ -12,6 +12,7 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import UserPosts from "./UserPosts";
 import Linkify from "@/components/Linkify";
+import EditProfile from "./EditProfile";
 
 // fetching the user with the given username
 
@@ -127,7 +128,7 @@ async function UserProfile({ user, loggedInUserId }: UserProfileProps) {
           </div>
         </div>
         {user.id === loggedInUserId ? (
-          <Button>Edit Profile</Button>
+          <EditProfile user={user} />
         ) : (
           <FollowButton userId={user.id} initialState={followerInfo} />
         )}
