@@ -35,7 +35,7 @@ const CropImageDialog = ({
 
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="flex max-h-[80vh] flex-col overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Crop Image</DialogTitle>
         </DialogHeader>
