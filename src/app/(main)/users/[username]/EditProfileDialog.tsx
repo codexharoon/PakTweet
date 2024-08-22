@@ -31,7 +31,6 @@ import AvatarPlaceholder from "@/assets/avatar-placeholder.png";
 import { Camera } from "lucide-react";
 import CropImageDialog from "@/components/CropImageDialog";
 import Resizer from "react-image-file-resizer";
-import { set } from "date-fns";
 
 interface EditProfileDialogProps {
   user: UserProp;
@@ -130,7 +129,7 @@ const EditProfileDialog = ({ user, open, onClose }: EditProfileDialogProps) => {
             />
             <DialogFooter>
               <LoadingButton loading={mutation.isPending} type="submit">
-                Update
+                Save
               </LoadingButton>
             </DialogFooter>
           </form>
