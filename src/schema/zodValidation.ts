@@ -37,6 +37,9 @@ export const submitPostSchema = z.object({
     .string()
     .trim()
     .min(1, { message: "Post content cannot be empty" }),
+  mediaIds: z
+    .array(z.string())
+    .max(5, { message: "Cannot upload more than 5 attachments" }),
 });
 
 export type submitPostSchemaType = z.infer<typeof submitPostSchema>;

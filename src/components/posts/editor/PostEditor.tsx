@@ -36,11 +36,14 @@ const PostEditor = () => {
   function submit() {
     if (!inputContent) return;
 
-    mutation.mutate(inputContent, {
-      onSuccess: () => {
-        editor?.commands.clearContent();
+    mutation.mutate(
+      { content: inputContent, mediaIds: [] },
+      {
+        onSuccess: () => {
+          editor?.commands.clearContent();
+        },
       },
-    });
+    );
   }
 
   return (
