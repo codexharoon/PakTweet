@@ -34,6 +34,7 @@ export function getPostDataInclude(loggedInUserId: string) {
     user: {
       select: getUserSelectData(loggedInUserId),
     },
+    attachments: true,
   } satisfies Prisma.PostInclude;
 }
 
