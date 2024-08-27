@@ -3,18 +3,26 @@
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
-import { submitPost } from "./actions";
-import { Button } from "@/components/ui/button";
 import UserAvatar from "@/components/UserAvatar";
 import { useSession } from "@/app/(main)/SessionProvider";
 import "./style.css";
 import useSubmitPostMutation from "./mutations";
 import LoadingButton from "@/components/ui/loading-button";
+import useMediaUpload from "./useMediaUpload";
 
 const PostEditor = () => {
   const { user } = useSession();
 
   const { mutation } = useSubmitPostMutation();
+
+  const {
+    attachments,
+    removeAttachment,
+    startUpload,
+    isUploading,
+    uploadProgrss,
+    reset: resetMediaUpload,
+  } = useMediaUpload();
 
   const editor = useEditor({
     extensions: [
@@ -37,7 +45,10 @@ const PostEditor = () => {
     if (!inputContent) return;
 
     mutation.mutate(
-      { content: inputContent, mediaIds: [] },
+      {
+        content: inputContent,
+        mediaIds: attachments.map((a) => a.mediaId).filter(Boolean) as string[],
+      },
       {
         onSuccess: () => {
           editor?.commands.clearContent();
