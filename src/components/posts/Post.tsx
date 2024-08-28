@@ -1,3 +1,5 @@
+"use client";
+
 import { PostProp } from "@/lib/types";
 import UserAvatar from "../UserAvatar";
 import Link from "next/link";
