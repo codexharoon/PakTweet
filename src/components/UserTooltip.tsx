@@ -50,7 +50,7 @@ const UserTooltip = ({ user, children }: UserTooltipProps) => {
                 <div className="text-lg font-semibold hover:underline">
                   {user.displayName}
                 </div>
-                <div className="text-muted-foreground">{user.username}</div>
+                <div className="text-muted-foreground">@{user.username}</div>
               </Link>
             </div>
 
