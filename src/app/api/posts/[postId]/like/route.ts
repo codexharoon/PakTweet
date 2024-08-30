@@ -2,11 +2,14 @@ import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
 import { likeInfoProp } from "@/lib/types";
 
-export async function GET({
-  params: { postId },
-}: {
-  params: { postId: string };
-}) {
+export async function GET(
+  req: Request,
+  {
+    params: { postId },
+  }: {
+    params: { postId: string };
+  },
+) {
   try {
     const { user: loggedInUser } = await validateRequest();
 
@@ -51,11 +54,14 @@ export async function GET({
   }
 }
 
-export async function POST({
-  params: { postId },
-}: {
-  params: { postId: string };
-}) {
+export async function POST(
+  req: Request,
+  {
+    params: { postId },
+  }: {
+    params: { postId: string };
+  },
+) {
   try {
     const { user: loggedInUser } = await validateRequest();
 
@@ -67,12 +73,12 @@ export async function POST({
       where: {
         userId_postId: {
           userId: loggedInUser.id,
-          postId,
+          postId: postId,
         },
       },
       create: {
         userId: loggedInUser.id,
-        postId,
+        postId: postId,
       },
       update: {},
     });
@@ -84,11 +90,14 @@ export async function POST({
   }
 }
 
-export async function DELETE({
-  params: { postId },
-}: {
-  params: { postId: string };
-}) {
+export async function DELETE(
+  req: Request,
+  {
+    params: { postId },
+  }: {
+    params: { postId: string };
+  },
+) {
   try {
     const { user: loggedInUser } = await validateRequest();
 
@@ -99,7 +108,7 @@ export async function DELETE({
     await prisma.like.deleteMany({
       where: {
         userId: loggedInUser.id,
-        postId,
+        postId: postId,
       },
     });
 
