@@ -16,19 +16,20 @@ datasource db {
 }
 
 model User {
-  id           String    @id
-  username     String    @unique
+  id           String     @id
+  username     String     @unique
   displayName  String
-  email        String?   @unique
+  email        String?    @unique
   hashPassword String?
-  googleId     String?   @unique
+  googleId     String?    @unique
   avatarUrl    String?
   bio          String?
   sessions     Session[]
   posts        Post[]
-  followings   Follow[]  @relation("Following")
-  followers    Follow[]  @relation("Followers")
+  followings   Follow[]   @relation("Following")
+  followers    Follow[]   @relation("Followers")
   likes        Like[]
+  bookmarks    Bookmark[]
 
   createdAt DateTime @default(now())
 
@@ -53,7 +54,8 @@ model Post {
   user        User    @relation(references: [id], fields: [userId], onDelete: Cascade)
   attachments Media[]
 
-  likes Like[]
+  likes     Like[]
+  bookmarks Bookmark[]
 
   createdAt DateTime @default(now())
 
@@ -97,4 +99,19 @@ model Like {
 
   @@unique([userId, postId])
   @@map("likes")
+}
+
+model Bookmark {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, postId])
+  @@map("bookmarks")
 }
