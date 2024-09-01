@@ -12,6 +12,8 @@ import { Media } from "@prisma/client";
 import Image from "next/image";
 import LikeButton from "../LikeButton";
 import BookmarkButton from "../BookmarkButton";
+import Comments, { CommentButton } from "./comments/Comments";
+import { useState } from "react";
 
 interface PostProps {
   post: PostProp;
@@ -19,6 +21,8 @@ interface PostProps {
 
 const Post = ({ post }: PostProps) => {
   const { user } = useSession();
+
+  const [showComments, setShowComments] = useState(false);
 
   return (
     <article className="group/post space-y-3 rounded-2xl bg-card p-5 shadow-sm">
@@ -68,13 +72,20 @@ const Post = ({ post }: PostProps) => {
       <hr className="text-muted-foreground" />
 
       <div className="flex justify-between gap-5">
-        <LikeButton
-          postId={post.id}
-          initialState={{
-            likes: post._count.likes,
-            isLikedByUser: post.likes.some((like) => like.userId === user.id),
-          }}
-        />
+        <div className="flex items-center justify-center gap-5">
+          <LikeButton
+            postId={post.id}
+            initialState={{
+              likes: post._count.likes,
+              isLikedByUser: post.likes.some((like) => like.userId === user.id),
+            }}
+          />
+
+          <CommentButton
+            post={post}
+            onClick={() => setShowComments(!showComments)}
+          />
+        </div>
 
         <BookmarkButton
           postId={post.id}
@@ -85,6 +96,7 @@ const Post = ({ post }: PostProps) => {
           }}
         />
       </div>
+      {showComments && <Comments post={post} />}
     </article>
   );
 };

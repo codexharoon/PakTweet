@@ -2,7 +2,7 @@
 
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
-import { PostProp } from "@/lib/types";
+import { getCommentDataInclude, PostProp } from "@/lib/types";
 import { commentSchema } from "@/schema/zodValidation";
 
 export async function postComment({
@@ -30,6 +30,7 @@ export async function postComment({
       postId: post.id,
       userId: user.id,
     },
+    include: getCommentDataInclude(user.id),
   });
 
   return newComment;
