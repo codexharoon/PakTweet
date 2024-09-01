@@ -61,3 +61,14 @@ export const updateUserProfileSchema = z.object({
 export type updateUserProfileSchemaType = z.infer<
   typeof updateUserProfileSchema
 >;
+
+// comment schema
+
+export const commentSchema = z.object({
+  content: z
+    .string()
+    .trim()
+    .min(1, { message: "Comment content cannot be empty" }),
+});
+
+export type commentSchemaType = z.infer<typeof commentSchema>;

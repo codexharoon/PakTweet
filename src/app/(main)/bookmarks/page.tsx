@@ -1,5 +1,10 @@
 import TrendsSidebar from "@/components/RightSidebar/TrendsSidebar";
 import Bookmarks from "./Bookmarks";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Bookmarks",
+};
 
 const page = () => {
   return (
