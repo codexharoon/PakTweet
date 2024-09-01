@@ -4,6 +4,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { kyInstance } from "@/lib/ky";
 import { Loader2 } from "lucide-react";
 import Comment from "./Comment";
+import { Button } from "@/components/ui/button";
 
 interface CommentsProps {
   post: PostProp;
@@ -27,29 +28,46 @@ const Comments = ({ post }: CommentsProps) => {
         .json<CommentDataProp>(),
     initialPageParam: null as string | null,
     getNextPageParam: (firstPage) => firstPage.previousCursor,
-    // select(data) {
-    //     //
-    // },
+    select: (data) => ({
+      pages: [...data.pages].reverse(),
+      pageParams: [...data.pageParams].reverse(),
+    }),
   });
 
-  if (status === "pending") {
-    return <Loader2 className="mx-auto animate-spin" />;
-  }
-
-  if (status === "error") {
-    return (
-      <p className="text-center text-destructive">
-        An error occurred while fetching the comments. Please try again later.
-      </p>
-    );
-  }
-
-  const comments = data.pages.flatMap((page) => page.comments);
+  const comments = data?.pages.flatMap((page) => page.comments) || [];
 
   return (
     <div className="space-y-3">
       <CommentInput post={post} />
-      <div className="divide-y">
+
+      {status === "pending" && <Loader2 className="mx-auto animate-spin" />}
+
+      {status === "success" && !comments.length && (
+        <p className="text-center text-muted-foreground">No comments yet.</p>
+      )}
+
+      {status === "error" && (
+        <p className="text-center text-destructive">
+          An error occurred while fetching the comments. Please try again later.
+        </p>
+      )}
+
+      {hasNextPage && (
+        <Button
+          variant={"link"}
+          className="mx-auto block"
+          disabled={isFetching}
+          onClick={() => fetchNextPage()}
+        >
+          {isFetchingNextPage ? (
+            <Loader2 className="mx-auto animate-spin" />
+          ) : (
+            "Load previous comments"
+          )}
+        </Button>
+      )}
+
+      <div className="max-h-[440px] divide-y overflow-y-auto">
         {comments.map((comment) => (
           <Comment key={comment.id} comment={comment} />
         ))}
