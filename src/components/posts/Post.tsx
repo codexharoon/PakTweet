@@ -12,8 +12,9 @@ import { Media } from "@prisma/client";
 import Image from "next/image";
 import LikeButton from "../LikeButton";
 import BookmarkButton from "../BookmarkButton";
-import Comments, { CommentButton } from "./comments/Comments";
+import Comments from "./comments/Comments";
 import { useState } from "react";
+import { CommentButton } from "./comments/CommentButton";
 
 interface PostProps {
   post: PostProp;
