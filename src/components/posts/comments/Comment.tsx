@@ -1,14 +1,19 @@
+"use client";
+
 import Linkify from "@/components/Linkify";
 import UserAvatar from "@/components/UserAvatar";
 import UserTooltip from "@/components/UserTooltip";
 import { CommentProp } from "@/lib/types";
 import { formatRelativeData } from "@/lib/utils";
 import Link from "next/link";
-import React from "react";
+import { useSession } from "@/app/(main)/SessionProvider";
+import CommentMoreButton from "./CommentsMoreButton";
 
 const Comment = ({ comment }: { comment: CommentProp }) => {
+  const { user } = useSession();
+
   return (
-    <div className="flex items-center gap-3 py-3">
+    <div className="group/comment flex items-center gap-3 py-3">
       <span className="">
         <UserTooltip user={comment.user}>
           <Link href={`/users/${comment.user.username}`}>
@@ -37,6 +42,12 @@ const Comment = ({ comment }: { comment: CommentProp }) => {
           <Linkify>{comment.content}</Linkify>
         </div>
       </div>
+      {user.id === comment.user.id && (
+        <CommentMoreButton
+          comment={comment}
+          className="ms-auto opacity-0 transition-opacity group-hover/comment:opacity-100"
+        />
+      )}
     </div>
   );
 };

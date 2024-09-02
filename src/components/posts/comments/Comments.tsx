@@ -1,3 +1,5 @@
+"use client";
+
 import { CommentDataProp, PostProp } from "@/lib/types";
 import CommentInput from "./CommentInput";
 import { useInfiniteQuery } from "@tanstack/react-query";
