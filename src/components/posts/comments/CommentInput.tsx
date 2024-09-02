@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import useSubmitComment from "./mutation";
+import { useSubmitComment } from "./mutation";
 import { PostProp } from "@/lib/types";
 import { Loader2, SendHorizonal } from "lucide-react";
 import { useState } from "react";
