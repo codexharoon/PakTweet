@@ -76,6 +76,27 @@ export type CommentProp = Prisma.CommentGetPayload<{
   include: ReturnType<typeof getCommentDataInclude>;
 }>;
 
+export function getNotificationsDataInclude() {
+  return {
+    issuer: {
+      select: {
+        username: true,
+        displayName: true,
+        avatarUrl: true,
+      },
+    },
+    post: {
+      select: {
+        content: true,
+      },
+    },
+  } satisfies Prisma.NotificationInclude;
+}
+
+export type NotificationProp = Prisma.NotificationGetPayload<{
+  include: ReturnType<typeof getNotificationsDataInclude>;
+}>;
+
 export interface PostDataProp {
   posts: PostProp[];
   nextCursor: string | null;
@@ -98,4 +119,9 @@ export interface bookmarkInfoProp {
 export interface CommentDataProp {
   comments: CommentProp[];
   previousCursor: string | null;
+}
+
+export interface NotificationDataProp {
+  notifications: NotificationProp[];
+  nextCursor: string | null;
 }
