@@ -125,3 +125,7 @@ export interface NotificationDataProp {
   notifications: NotificationProp[];
   nextCursor: string | null;
 }
+
+export interface NotificationCountInfoProp {
+  unreadCount: number;
+}

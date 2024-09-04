@@ -1,12 +1,26 @@
 import { Button } from "@/components/ui/button";
 import { Bell, Bookmark, Home, Mail } from "lucide-react";
 import Link from "next/link";
+import NotificationsButton from "./NotificationsButton";
+import { validateRequest } from "@/auth";
+import prisma from "@/lib/prisma";
 
 interface SidebarProps {
   className?: string;
 }
 
-const Sidebar = ({ className }: SidebarProps) => {
+export default async function Sidebar({ className }: SidebarProps) {
+  const { user } = await validateRequest();
+
+  if (!user) return null;
+
+  const unreadCount = await prisma.notification.count({
+    where: {
+      recipientId: user.id,
+      read: false,
+    },
+  });
+
   return (
     <div className={className}>
       <Button
@@ -28,7 +42,14 @@ const Sidebar = ({ className }: SidebarProps) => {
         asChild
       >
         <Link href={"/notifications"}>
-          <Bell />
+          <div className="relative">
+            <Bell />
+            {!!unreadCount && (
+              <span className="absolute -right-1 -top-1 rounded-full bg-primary px-1 text-xs tabular-nums text-primary-foreground">
+                {unreadCount}
+              </span>
+            )}
+          </div>
           <span className="hidden lg:inline">Notifications</span>
         </Link>
       </Button>
@@ -58,6 +79,4 @@ const Sidebar = ({ className }: SidebarProps) => {
       </Button>
     </div>
   );
-};
-
-export default Sidebar;
+}
