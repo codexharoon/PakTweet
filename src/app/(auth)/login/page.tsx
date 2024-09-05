@@ -4,6 +4,8 @@ import React from "react";
 import { Metadata } from "next";
 import Link from "next/link";
 import LoginForm from "./LoginForm";
+import GoogleSignInButton from "./google/GoogleSigninButton";
+import DividerWithCenterText from "@/components/DividerWithCenterText";
 
 export const metadata: Metadata = {
   title: "Login",
@@ -23,6 +25,10 @@ const Page = () => {
             </p>
           </div>
           <div className="space-y-5">
+            <GoogleSignInButton />
+
+            <DividerWithCenterText>OR</DividerWithCenterText>
+
             <LoginForm />
             <Link
               href={"/signup"}
