@@ -16,6 +16,14 @@ const nextConfig = {
     },
   },
   serverExternalPackages: ["@node-rs/argon2"],
+  rewrites: () => {
+    return [
+      {
+        source: "/hashtags/:tag",
+        destination: "/search?q=:tag",
+      },
+    ];
+  },
 };
 
 export default nextConfig;
