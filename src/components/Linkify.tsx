@@ -53,7 +53,7 @@ function LinkifyHashtag({ children }: LinkifyProps) {
         return (
           <Link
             key={key}
-            href={`/hastags/${hashtag}`}
+            href={`/hashtags/${hashtag}`}
             className="text-primary hover:underline"
           >
             {match}
