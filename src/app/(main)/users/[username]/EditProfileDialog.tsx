@@ -25,12 +25,14 @@ import {
 import LoadingButton from "@/components/ui/loading-button";
 import { Textarea } from "@/components/ui/textarea";
 import Image, { StaticImageData } from "next/image";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Label } from "@/components/ui/label";
 import AvatarPlaceholder from "@/assets/avatar-placeholder.png";
-import { Camera } from "lucide-react";
+import { Camera, Loader2 } from "lucide-react";
 import CropImageDialog from "@/components/CropImageDialog";
 import Resizer from "react-image-file-resizer";
+import { useDebounceCallback } from "usehooks-ts";
+import { kyInstance } from "@/lib/ky";
 
 interface EditProfileDialogProps {
   user: UserProp;
@@ -39,6 +41,42 @@ interface EditProfileDialogProps {
 }
 
 const EditProfileDialog = ({ user, open, onClose }: EditProfileDialogProps) => {
+  const [username, setUsername] = useState(user.username);
+  const [usernameErrMsg, setUsernameErrMsg] = useState<string>("");
+  const [findUsernameLoading, setFindUsernameLoading] =
+    useState<boolean>(false);
+
+  const debounced = useDebounceCallback(setUsername, 500);
+
+  useEffect(() => {
+    const findUsername = async () => {
+      if (username) {
+        setUsernameErrMsg("");
+        setFindUsernameLoading(true);
+
+        if (username === user.username) {
+          setUsernameErrMsg("");
+          setFindUsernameLoading(false);
+          return;
+        }
+
+        try {
+          const res: { message: string } = await kyInstance
+            .get(`/api/users/username/${username}/find`)
+            .json();
+
+          setUsernameErrMsg(res.message);
+        } catch (error) {
+          setUsernameErrMsg("Username is not available");
+        } finally {
+          setFindUsernameLoading(false);
+        }
+      }
+    };
+
+    findUsername();
+  }, [username, user.username]);
+
   const mutation = useUpdateUserProfileMutation();
 
   const [croppedAvatar, setCroppedAvatar] = useState<Blob | null>(null);
@@ -46,6 +84,7 @@ const EditProfileDialog = ({ user, open, onClose }: EditProfileDialogProps) => {
   const form = useForm<updateUserProfileSchemaType>({
     resolver: zodResolver(updateUserProfileSchema),
     defaultValues: {
+      username: user.username,
       displayName: user.displayName,
       bio: user.bio || "",
     },
@@ -95,7 +134,45 @@ const EditProfileDialog = ({ user, open, onClose }: EditProfileDialogProps) => {
         </div>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="@username"
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        debounced(e.target.value);
+                      }}
+                    />
+                  </FormControl>
+
+                  {
+                    <p className="text-xs">
+                      {findUsernameLoading ? (
+                        <Loader2 className="ml-3 mt-3 h-4 w-4 animate-spin" />
+                      ) : usernameErrMsg === "username is available." ? (
+                        <span className="ml-3 mt-2 text-green-500">
+                          {usernameErrMsg}
+                        </span>
+                      ) : (
+                        <span className="ml-3 mt-2 text-red-500">
+                          {usernameErrMsg}
+                        </span>
+                      )}
+                    </p>
+                  }
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <FormField
               control={form.control}
               name="displayName"

@@ -23,11 +23,12 @@ export async function updateUserProfile(values: updateUserProfileSchemaType) {
     throw new Error("Unauthorized");
   }
 
-  const { displayName, bio } = validateValues.data;
+  const { displayName, bio, username } = validateValues.data;
 
   const updatedUser = await prisma.user.update({
     where: { id: user.id },
     data: {
+      username,
       displayName,
       bio,
     },
