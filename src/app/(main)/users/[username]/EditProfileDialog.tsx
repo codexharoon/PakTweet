@@ -50,7 +50,12 @@ const EditProfileDialog = ({ user, open, onClose }: EditProfileDialogProps) => {
 
   useEffect(() => {
     const findUsername = async () => {
-      if (username) {
+      if (!username || username.length < 3) {
+        setUsernameErrMsg("");
+        return;
+      }
+
+      if (username && username.length >= 3) {
         setUsernameErrMsg("");
         setFindUsernameLoading(true);
 
@@ -152,7 +157,7 @@ const EditProfileDialog = ({ user, open, onClose }: EditProfileDialogProps) => {
                     />
                   </FormControl>
 
-                  {
+                  {(usernameErrMsg || findUsernameLoading) && (
                     <p className="text-xs">
                       {findUsernameLoading ? (
                         <Loader2 className="ml-3 mt-3 h-4 w-4 animate-spin" />
@@ -166,7 +171,7 @@ const EditProfileDialog = ({ user, open, onClose }: EditProfileDialogProps) => {
                         </span>
                       )}
                     </p>
-                  }
+                  )}
 
                   <FormMessage />
                 </FormItem>
