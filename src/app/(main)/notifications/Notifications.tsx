@@ -1,14 +1,18 @@
 "use client";
 
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { NotificationDataProp, PostDataProp } from "@/lib/types";
-import Post from "@/components/posts/Post";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { NotificationDataProp } from "@/lib/types";
 import { kyInstance } from "@/lib/ky";
 import InfiniteScrollContainer from "@/components/InfiniteScrollContainer";
 import PostsLoadingSkeleton, {
   PostLoadingSkeleton,
 } from "@/components/posts/PostsLoadingSkeleton";
 import Notification from "./Notification";
+import { useEffect } from "react";
 
 const Notifications = () => {
   const {
@@ -29,6 +33,24 @@ const Notifications = () => {
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
   });
+
+  const queryClient = useQueryClient();
+
+  const { mutate } = useMutation({
+    mutationFn: () => kyInstance.patch("/api/notifications/mark-as-read"),
+    onSuccess: () => {
+      queryClient.setQueryData(["unread-notification-count"], {
+        unreadCount: 0,
+      });
+    },
+    onError(error) {
+      console.log("Failed to mark notification as read: ", error);
+    },
+  });
+
+  useEffect(() => {
+    mutate();
+  }, [mutate]);
 
   if (status === "pending") {
     return <PostsLoadingSkeleton />;

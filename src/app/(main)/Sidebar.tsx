@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Bell, Bookmark, Home, Mail } from "lucide-react";
+import { Bookmark, Home, Mail } from "lucide-react";
 import Link from "next/link";
 import NotificationsButton from "./NotificationsButton";
 import { validateRequest } from "@/auth";
@@ -35,24 +35,7 @@ export default async function Sidebar({ className }: SidebarProps) {
         </Link>
       </Button>
 
-      <Button
-        variant={"ghost"}
-        title="Notifications"
-        className="flex items-center justify-start gap-3"
-        asChild
-      >
-        <Link href={"/notifications"}>
-          <div className="relative">
-            <Bell />
-            {!!unreadCount && (
-              <span className="absolute -right-1 -top-1 rounded-full bg-primary px-1 text-xs tabular-nums text-primary-foreground">
-                {unreadCount}
-              </span>
-            )}
-          </div>
-          <span className="hidden lg:inline">Notifications</span>
-        </Link>
-      </Button>
+      <NotificationsButton initialState={{ unreadCount }} />
 
       <Button
         variant={"ghost"}

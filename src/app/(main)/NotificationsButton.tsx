@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { kyInstance } from "@/lib/ky";
 import { NotificationCountInfoProp } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
-import { Bell, Link } from "lucide-react";
-import dynamic from "next/dynamic";
+import { Bell } from "lucide-react";
+import Link from "next/link";
+// import dynamic from "next/dynamic";
 
 interface NotificationButtonProps {
   initialState: NotificationCountInfoProp;
@@ -32,9 +33,9 @@ const NotificationsButton = ({ initialState }: NotificationButtonProps) => {
       <Link href={"/notifications"}>
         <div className="relative">
           <Bell />
-          {!!data.unreadCount && (
+          {!!data?.unreadCount && (
             <span className="absolute -right-1 -top-1 rounded-full bg-primary px-1 text-xs tabular-nums text-primary-foreground">
-              {data.unreadCount}
+              {data?.unreadCount}
             </span>
           )}
         </div>
@@ -44,6 +45,8 @@ const NotificationsButton = ({ initialState }: NotificationButtonProps) => {
   );
 };
 
-export default dynamic(() => Promise.resolve(NotificationsButton), {
-  ssr: false,
-});
+// export default dynamic(() => Promise.resolve(NotificationsButton), {
+//   ssr: false,
+// });
+
+export default NotificationsButton;
