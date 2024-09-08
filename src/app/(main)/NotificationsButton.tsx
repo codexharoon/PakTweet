@@ -5,6 +5,7 @@ import { kyInstance } from "@/lib/ky";
 import { NotificationCountInfoProp } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
 import { Bell, Link } from "lucide-react";
+import dynamic from "next/dynamic";
 
 interface NotificationButtonProps {
   initialState: NotificationCountInfoProp;
@@ -43,4 +44,6 @@ const NotificationsButton = ({ initialState }: NotificationButtonProps) => {
   );
 };
 
-export default NotificationsButton;
+export default dynamic(() => Promise.resolve(NotificationsButton), {
+  ssr: false,
+});
