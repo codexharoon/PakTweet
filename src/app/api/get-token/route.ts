@@ -1,0 +1,37 @@
+import { validateRequest } from "@/auth";
+import streamServerClient from "@/lib/stream";
+
+export async function GET() {
+  try {
+    const { user } = await validateRequest();
+    if (!user) {
+      return Response.json(
+        {
+          error: "Unauthorized",
+        },
+        {
+          status: 401,
+        },
+      );
+    }
+
+    const expiryTime = Math.floor(Date.now() / 1000) + 60 * 60;
+    const issuedAt = Math.floor(Date.now() / 1000);
+
+    const token = streamServerClient.createToken(user.id, expiryTime, issuedAt);
+
+    return Response.json({
+      token,
+    });
+  } catch (error) {
+    console.log("stream get token error ", error);
+    return Response.json(
+      {
+        error: "Internal Server Error",
+      },
+      {
+        status: 500,
+      },
+    );
+  }
+}
