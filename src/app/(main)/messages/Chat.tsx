@@ -6,11 +6,13 @@ import { Chat as StreamChat } from "stream-chat-react";
 import ChatSidebar from "./ChatSidebar";
 import ChatChannel from "./ChatChannel";
 import { useTheme } from "next-themes";
+import { useState } from "react";
 
 const Chat = () => {
   const client = useInitilizeChatClient();
-
   const { resolvedTheme } = useTheme();
+
+  const [open, setOpen] = useState(false);
 
   if (!client) return <Loader2 className="mx-auto animate-spin" />;
 
@@ -25,8 +27,8 @@ const Chat = () => {
               : "str-chat__theme-light"
           }
         >
-          <ChatSidebar />
-          <ChatChannel />
+          <ChatSidebar open={open} onClose={() => setOpen(false)} />
+          <ChatChannel open={!open} onClose={() => setOpen(true)} />
         </StreamChat>
       </div>
     </main>
