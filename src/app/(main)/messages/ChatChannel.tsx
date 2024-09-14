@@ -38,7 +38,7 @@ interface CustomChannelHeaderProps extends ChannelHeaderProps {
 function CustomChannelHeader({ onClose, ...props }: CustomChannelHeaderProps) {
   return (
     <div className="flex items-center gap-3 p-2">
-      <div className="md:hidden">
+      <div className="h-full md:hidden">
         <Button onClick={onClose} variant={"ghost"} size={"icon"}>
           <Menu className="size-5" />
         </Button>

@@ -6,8 +6,9 @@ import {
 import { useSession } from "../SessionProvider";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
-import { useCallback } from "react";
+import { MailPlus, X } from "lucide-react";
+import { useCallback, useState } from "react";
+import NewChatDialog from "./NewChatDialog";
 
 interface ChatSidebarProps {
   open: boolean;
@@ -71,13 +72,36 @@ interface MenuHeaderProps {
 }
 
 function MenuHeader({ onClose }: MenuHeaderProps) {
+  const [openNewChatDialog, setOpenNewChatDialog] = useState(false);
+
   return (
-    <div className="flex items-center gap-3 p-2">
-      <div className="md:hidden">
+    <div className="flex items-center justify-center gap-3 p-2">
+      <div className="h-full md:hidden">
         <Button onClick={onClose} variant={"ghost"} size={"icon"}>
           <X className="size-5" />
         </Button>
       </div>
+
+      <h1 className="me-auto text-xl font-bold md:ms-2">Messages</h1>
+
+      <Button
+        variant={"ghost"}
+        size={"icon"}
+        onClick={() => setOpenNewChatDialog(true)}
+        title="Create New Chat"
+      >
+        <MailPlus className="size-5" />
+      </Button>
+
+      {openNewChatDialog && (
+        <NewChatDialog
+          handleOpenChange={setOpenNewChatDialog}
+          onChatCreated={() => {
+            setOpenNewChatDialog(false);
+            onClose();
+          }}
+        />
+      )}
     </div>
   );
 }
