@@ -8,6 +8,7 @@ import { hash } from "@node-rs/argon2";
 import { generateIdFromEntropySize } from "lucia";
 import { cookies } from "next/headers";
 import { lucia } from "@/auth";
+import streamServerClient from "@/lib/stream";
 
 export async function signup(
   credientials: signUpSchemaType,
@@ -65,14 +66,22 @@ export async function signup(
 
     const userId = generateIdFromEntropySize(10); // 16 characters long
 
-    await prisma.user.create({
-      data: {
+    await prisma.$transaction(async (tx) => {
+      await tx.user.create({
+        data: {
+          id: userId,
+          username,
+          email,
+          hashPassword: passwordHash,
+          displayName: username,
+        },
+      });
+
+      await streamServerClient.upsertUser({
         id: userId,
         username,
-        email,
-        hashPassword: passwordHash,
-        displayName: username,
-      },
+        name: username,
+      });
     });
 
     const session = await lucia.createSession(userId, {});

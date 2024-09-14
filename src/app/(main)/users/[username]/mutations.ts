@@ -70,6 +70,7 @@ export function useUpdateUserProfileMutation() {
       );
 
       router.replace(`/users/${updatedUser.username}`);
+      router.refresh();
 
       toast({
         description: "Profile updated!",
