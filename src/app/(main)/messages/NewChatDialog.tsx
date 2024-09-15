@@ -10,7 +10,7 @@ import { useState } from "react";
 import { UserResponse } from "stream-chat";
 import { DefaultStreamChatGenerics, useChatContext } from "stream-chat-react";
 import { useSession } from "../SessionProvider";
-import { Check, SearchIcon, X } from "lucide-react";
+import { Check, Loader2, SearchIcon, X } from "lucide-react";
 import UserAvatar from "@/components/UserAvatar";
 
 interface NewChatDialogProps {
@@ -33,7 +33,7 @@ const NewChatDialog = ({
     UserResponse<DefaultStreamChatGenerics>[]
   >([]);
 
-  const { data, isSuccess, isFetching } = useQuery({
+  const { data, isSuccess, isFetching, isError } = useQuery({
     queryKey: ["stream-users", debouncedSearchInput],
     queryFn: async () =>
       client.queryUsers(
@@ -91,6 +91,16 @@ const NewChatDialog = ({
           </div>
 
           <div className="h-96 overflow-y-auto">
+            {isFetching && (
+              <Loader2 className="mx-auto my-3 animate-spin text-primary" />
+            )}
+
+            {isSuccess && !data.users.length && !isFetching && (
+              <p className="text-center text-muted-foreground">
+                No users found. Try searching with a different name.
+              </p>
+            )}
+
             {isSuccess &&
               data.users.map((user) => (
                 <UserResult
@@ -106,6 +116,12 @@ const NewChatDialog = ({
                   }
                 />
               ))}
+
+            {isError && (
+              <p className="text-center text-destructive">
+                An error occurred while fetching users.
+              </p>
+            )}
           </div>
         </div>
       </DialogContent>
@@ -114,6 +130,8 @@ const NewChatDialog = ({
 };
 
 export default NewChatDialog;
+
+// user result card
 
 interface UserResultProps {
   user: UserResponse<DefaultStreamChatGenerics>;
@@ -140,6 +158,8 @@ function UserResult({ user, selected, onClick }: UserResultProps) {
     </button>
   );
 }
+
+// selected user tag
 
 interface SelectedUserTagProps {
   user: UserResponse<DefaultStreamChatGenerics>;
