@@ -2,16 +2,19 @@ import useDebounce from "@/app/hooks/useDebounce";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { UserResponse } from "stream-chat";
 import { DefaultStreamChatGenerics, useChatContext } from "stream-chat-react";
 import { useSession } from "../SessionProvider";
 import { Check, Loader2, SearchIcon, X } from "lucide-react";
 import UserAvatar from "@/components/UserAvatar";
+import { useToast } from "@/components/ui/use-toast";
+import LoadingButton from "@/components/ui/loading-button";
 
 interface NewChatDialogProps {
   handleOpenChange: (open: boolean) => void;
@@ -22,7 +25,9 @@ const NewChatDialog = ({
   handleOpenChange,
   onChatCreated,
 }: NewChatDialogProps) => {
-  const { client, channel } = useChatContext();
+  const { client, setActiveChannel } = useChatContext();
+
+  const { toast } = useToast();
 
   const { user: loggedInUser } = useSession();
 
@@ -52,6 +57,35 @@ const NewChatDialog = ({
         { username: 1, name: 1 },
         { limit: 10 },
       ),
+  });
+
+  const mutation = useMutation({
+    mutationFn: async () => {
+      const channel = client.channel("messaging", {
+        members: [loggedInUser.id, ...selectedUsers.map((user) => user.id)],
+        name:
+          selectedUsers.length > 1
+            ? loggedInUser.displayName +
+              ", " +
+              selectedUsers.map((user) => user.name).join(", ")
+            : undefined,
+      });
+
+      await channel.create();
+
+      return channel;
+    },
+    onSuccess: (channel) => {
+      setActiveChannel(channel);
+      onChatCreated();
+    },
+    onError(error) {
+      console.log("error to create group chat: ", error);
+      toast({
+        variant: "destructive",
+        description: "An error occurred while creating the chat.",
+      });
+    },
   });
 
   return (
@@ -124,6 +158,16 @@ const NewChatDialog = ({
             )}
           </div>
         </div>
+
+        <DialogFooter className="px-6 pb-6">
+          <LoadingButton
+            loading={mutation.isPending}
+            disabled={!selectedUsers.length}
+            onClick={() => mutation.mutate()}
+          >
+            Start Chat
+          </LoadingButton>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
