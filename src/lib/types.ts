@@ -129,3 +129,7 @@ export interface NotificationDataProp {
 export interface NotificationCountInfoProp {
   unreadCount: number;
 }
+
+export interface MessagesCountInfoProp {
+  unreadCount: number;
+}

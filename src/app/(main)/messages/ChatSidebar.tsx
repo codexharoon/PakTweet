@@ -2,13 +2,15 @@ import {
   ChannelList,
   ChannelPreviewMessenger,
   ChannelPreviewUIComponentProps,
+  useChatContext,
 } from "stream-chat-react";
 import { useSession } from "../SessionProvider";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { MailPlus, X } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import NewChatDialog from "./NewChatDialog";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ChatSidebarProps {
   open: boolean;
@@ -17,6 +19,15 @@ interface ChatSidebarProps {
 
 const ChatSidebar = ({ open, onClose }: ChatSidebarProps) => {
   const { user } = useSession();
+
+  const queryClient = useQueryClient();
+  const { channel } = useChatContext();
+
+  useEffect(() => {
+    if (channel?.id) {
+      queryClient.invalidateQueries({ queryKey: ["unread-messages-count"] });
+    }
+  }, [channel?.id, queryClient]);
 
   const CustomChannelPreview = useCallback(
     (props: ChannelPreviewUIComponentProps) => (
